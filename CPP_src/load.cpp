@@ -385,9 +385,9 @@ map<string, vector<double> > load::get_bed_positions(string dir,string out,int d
     while ((entry = readdir(dp))){
     	string file_name 	= dir + entry->d_name;
     	intert_bed(file_name, G);
-		if (t > 10){
-			break;
-		}
+		// if (t > 10){
+		// 	break;
+		// }
     	t++;
     }
     printf("done\n");
