@@ -1,4 +1,16 @@
+#PBS -N gTFIv2
+#PBS -m ae
+#PBS -M joseph.azofeifa@colorado.edu
+#PBS -e /Users/azofeifa/correlation_networks/
+#PBS -o /Users/azofeifa/correlation_networks/
+#PBS -l walltime=72:00:00
+#PBS -l nodes=1:ppn=64
+#PBS -l mem=10gb
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4c0e139d065d0bb3d2dbda70c1223876dbb9231b
 ./CORR join -bed_dir /Users/joazofeifa/Lab/new_motif_distances/EMG_out_files_human/ -o /Users/joazofeifa/Desktop/test.bed -fast 0 -window 1000 -distance 1000
 
 
