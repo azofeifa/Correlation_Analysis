@@ -8,6 +8,7 @@ params::params(){
 	p["-bed"] 		= "";
 	p["-bg_dir"] 	= "";
 	p["-fast"] 		= "0";
+	p["-norm"] 		= "0";
 	p["-window"] 	= "0";
 	module 		= "";
 	EXIT 		= false;
@@ -56,6 +57,13 @@ void params::display(){
 		header 	+= "-bed         : "+p["-bed"]+"\n";
 
 	}
+	if (module=="correlate"){
+		header 	+= "....computing correlation coefficients....\n";
+		header  += "Date Time    : "+currentDateTime2()+"\n";
+		header 	+= "-bed         : "+p["-bed"]+"\n";
+		header	+= "-norm        : "+p["-norm"]+"\n";		
+	}
+
 	header 	+= "-o           : "+p["-o"]+"\n";
 	header  += "===============================================\n";
 	printf("%s\n", header.c_str() );	
@@ -72,7 +80,7 @@ void fill_in_options(char* argv[],params * P, int rank){
 	argv++;
 	if (*argv){
 		P->module  = string(*argv);
-		if (not (P->module== "join" or P->module=="insert"   )){
+		if (not (P->module== "join" or P->module=="insert"  or P->module=="correlate"  )){
 			printf("did not specify module, either DB or EVAL\ntry -h or --help for quick reference software usage\n");
 			P->EXIT 	= true;
 		}
