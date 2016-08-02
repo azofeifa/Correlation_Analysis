@@ -134,9 +134,9 @@ map<string, int> load::insert_bedgraph_data(map<string, node> A, vector<string> 
 						NS[IDS[i]] +=y;
 						A[chrom].insert_coverage(x,y, ID);
 					}
-					if (t > 100000){
-						break;
-					}
+					//if (t > 100000){
+					//	break;
+					//}
 					t+=1;
 
 				

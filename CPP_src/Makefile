@@ -4,7 +4,7 @@
 #**    Description: Makefile for SE Calculator                             */
 #***************************************************************************/
 
-CXX             = g++-5.1.0
+CXX             = g++
 CXXFLAGS        = -Wno-unused-variable -Wno-non-virtual-dtor -std=c++11 -fopenmp -Wno-write-strings -Wno-literal-suffix 
 EXEC            = ${PWD}/CORR
 ARCH  		= getconf LONG_BIT
