@@ -5,6 +5,18 @@
 #include <cstdio>
 #include <ctime>
 #include <omp.h>
+#include <sys/time.h>
+double get_wall_time(){
+    struct timeval time;
+    if (gettimeofday(&time,NULL)){
+        //  Handle error
+        return 0;
+    }
+    return (double)time.tv_sec + (double)time.tv_usec * .000001;
+}
+double get_cpu_time(){
+    return (double)clock() / CLOCKS_PER_SEC;
+}
 using namespace std;
 void make_weigts(double * weights, vector<double> counts, int m){
 	double S=0;
@@ -64,14 +76,32 @@ void correlate::compute(vector<vector<double>> A, vector<double> counts, vector<
 	double pearons;
 	fill_mean_std(D, mean, std, weights, n, m);
 
-//	#pragma omp parallel for
-	for (int i = 0 ; i < n;i++){
-		P[i][i] 		= 1.0;
-		for (int j = i +1; j < n ; j++){
-			pearons 	= covariance(D[i], D[j], m, weights,  mean[i], mean[j] )/(std[i]*std[j]);
-			P[i][j] 	= pearons, P[j][i] 	= pearons;
+	int threads  	= omp_get_max_threads();
+	int cts 		= n / threads;
+//	threads 		= 1;
+	double wall0 = get_wall_time();
+    double cpu0  = get_cpu_time();
+	#pragma omp parallel num_threads(threads)
+	{
+		int tid 	= omp_get_thread_num();
+		int start 	= tid*cts;
+		int stop 	= (tid+1)*(cts);
+		if (tid+1 == threads){
+			stop 	= n;
+		}
+		for (int i = start ; i < stop;i++){
+			P[i][i] 		= 1.0;
+			for (int j = i +1; j < n ; j++){
+				pearons 	= covariance(D[i], D[j], m, weights,  mean[i], mean[j] )/(std[i]*std[j]);
+				P[i][j] 	= pearons, P[j][i] 	= pearons;
+			}
 		}
 	}
+	double wall1 = get_wall_time();
+    double cpu1  = get_cpu_time();
+    cout<<endl;
+    cout<< "Wall Time = " << wall1 - wall0 << endl;
+    cout<< "CPU Time  = " << cpu1  - cpu0  << endl;
 
     
 	ofstream FHW(out_file);
