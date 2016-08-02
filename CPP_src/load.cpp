@@ -162,18 +162,11 @@ map<string, int> load::insert_bedgraph_data(map<string, node> A, vector<string> 
 						NS[IDS[i]] +=y;
 						A[chrom].insert_coverage(x,y, ID);
 					}
-<<<<<<< HEAD
 					//if (t > 100000){
 					//	break;
 					//}
 					t+=1;
-=======
-					// if (t > 100000){
-					// 	break;
-					// }
-					// t+=1;
 					prevchrom=chrom;
->>>>>>> b1d03cd208e9e161240b3ff215a1da4515a0859b
 
 				
 				}
