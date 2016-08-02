@@ -99,34 +99,43 @@ void correlate::compute(vector<vector<double>> A, vector<double> counts, vector<
 	}
 	double wall1 = get_wall_time();
     double cpu1  = get_cpu_time();
-    cout<<endl;
-    cout<< "Wall Time = " << wall1 - wall0 << endl;
-    cout<< "CPU Time  = " << cpu1  - cpu0  << endl;
+    // cout<<endl;
+    // cout<< "Wall Time = " << wall1 - wall0 << endl;
+    // cout<< "CPU Time  = " << cpu1  - cpu0  << endl;
 
     
 	ofstream FHW(out_file);
-	string line 	= "";
+	string line 	= "#Locations\t";
+	string line2 	= "#MeanExpression\t";
+	string line3 	= "#VarExpression\t";
 		
 	for (int i = 0 ; i < n ; i++){
-		line 	= chroms[i]+":" + to_string(int(centers[i]));
+		line += chroms[i]+":" + to_string(int(centers[i]));
+		line2 += to_string(mean[i]);
+		line3 += to_string(std[i]);
 		if (i+1 < n){
-			FHW<<line+",";
+			line+=",";
+			line2+=",";
+			line3+=",";
 		}
 		else{
-			FHW<<line<<endl;
+			line+="\n";
+			line2+="\n";
+			line3+="n";
 		}
-
-		
 	}
-
+	FHW<<line;
+	FHW<<line2;
+	FHW<<line3;
 	for (int i = 0 ; i < n; i++){
 		line 	= "";
 		for (int j = i+1; j < n ; j++){
-			int dist 	= int(abs(centers[i]-centers[j]));
+			int dist 	= int((abs(centers[i]-centers[j]))/1000.0);
 			if (chroms[i]!=chroms[j]){
 				dist 	= -1;
 			}
-			if (P[i][j]>0.4){
+
+			if (P[i][j]>0.7){
 				line+=  to_string(IDS[i]) + ","+ to_string(IDS[j]) + "\t" + to_string(P[i][j]) + "," + to_string(dist) + "\n";
 			}
 		}
