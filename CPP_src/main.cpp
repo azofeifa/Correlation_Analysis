@@ -1,6 +1,8 @@
 #include "read_in_parameters.h"
 #include "load.h"
 #include <omp.h>
+#include "correlations.h"
+#include <iostream>
 using namespace std;
 
 int main(int argc,char* argv[]){
@@ -13,6 +15,30 @@ int main(int argc,char* argv[]){
 		return 0;
 	}
 	P->display();
+
+	if (P->module=="correlate"){
+		string input 			= P->p["-bed"];
+		string out_file 		= P->p["-o"];
+		int norm 				= stoi(P->p["-norm"]);
+		printf("loading input file...............");
+		cout.flush();
+		vector<double> counts; 
+		vector<int> IDS; 
+		vector<string> chroms;
+		vector<double> centers;
+
+		vector<vector<double>> A 	= load::coverage_stats_file(input,  counts, IDS,  centers,   chroms );
+		printf("done\n");
+		cout.flush();
+		printf("computing correlations...............");
+		cout.flush();
+		correlate::compute( A,  counts, IDS,  chroms,  centers,   out_file);
+		printf("done\n");
+		cout.flush();
+
+
+	}
+
 	if (P->module=="join"){
 		string bed_directory 	= P->p["-bed_dir"];
 		string out_file		 	= P->p["-o"];

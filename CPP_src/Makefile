@@ -13,9 +13,9 @@ CPP_FLAGS_32  	= -D32_BIT
 CPP_FLAGS_64  	= -D64_BIT
 
 GCCVERSION 		= $(shell ${CXX} -dumpversion)
-COO: main.o    load.o split.o read_in_parameters.o 
+COO: main.o    load.o split.o read_in_parameters.o correlations.o
 	@printf "linking           : "
-	@${CXX} ${CXXFLAGS}    ${PWD}/main.o ${PWD}/load.o   ${PWD}/split.o ${PWD}/read_in_parameters.o   -o ${EXEC}
+	@${CXX} ${CXXFLAGS}    ${PWD}/main.o ${PWD}/correlations.o ${PWD}/load.o   ${PWD}/split.o ${PWD}/read_in_parameters.o   -o ${EXEC}
 	@printf "done\n"
 	@echo "========================================="
 	@printf "finished :)\n"
@@ -35,6 +35,12 @@ load.o:
 	@printf "load              : "	
 	@${CXX} -c ${CXXFLAGS} ${PWD}/load.cpp 
 	@printf "done\n"
+
+correlations.o: 
+	@printf "correlations      : "	
+	@${CXX} -c ${CXXFLAGS} ${PWD}/correlations.cpp 
+	@printf "done\n"
+
 split.o:
 	@printf "split             : "
 	@${CXX} -c ${CXXFLAGS} ${PWD}/split.cpp 

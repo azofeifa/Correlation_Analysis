@@ -51,6 +51,7 @@ namespace load{
 	map<string, node> make_interval_tree(string,vector<string>);
 	map<string, int> insert_bedgraph_data(map<string, node> , vector<string> , vector<string> );
 	void write_out_inserted_bedgaph_data(map<string, node> , map<string, int>, vector<string>  , string );
+	vector<vector<double>> coverage_stats_file(string, vector<double> &  ,vector<int> &  , vector<double> &  , vector<string> &  );
 
 	map<string, vector<double> > get_bed_positions(string,string,int,int,int);
 }

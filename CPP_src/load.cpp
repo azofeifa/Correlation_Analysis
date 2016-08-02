@@ -104,8 +104,24 @@ vector<string> split_under_tab(string str, char delimiter) {
 	while(getline(ss, tok, delimiter)) {
 		internal.push_back(tok);
 	}
-
 	return internal;
+}
+
+vector<segment *> sort_segments(vector<segment *> x){
+	bool changed 	= true;
+	while (changed){
+		changed = false;
+		for (int i = 1 ; i < x.size(); i++){
+			if (x[i-1]->start> x[i]->start){
+				changed 		= true;
+				segment * copy 	= x[i-1];
+				x[i-1] 	= x[i];
+				x[i] 	= copy;
+			}
+		}
+	}
+	return x;
+
 }
 
 
@@ -123,21 +139,34 @@ map<string, int> load::insert_bedgraph_data(map<string, node> A, vector<string> 
 		vector<string> line_array;
 		double x,y;
 		int t 			= 0;
+		string prevchrom 	= "";
+		int j 			= 0, k =0, N 	= 0;
+		vector<segment *> intervals;
+
 		if (FH){
 			while (getline(FH, line)){
 				line_array 	= split_under_tab(line, '\t');
 				if (line_array.size()==4){
 					chrom  		= line_array[0];
-					if (A.find(chrom)!=A.end()){
+					if (chrom!=prevchrom){
+						j=0,N 	= 0;
+						if (A.find(chrom)!=A.end()){
+							N 	= 1;
+						}
+
+					}
+					if (N>0){
 						x 			= (stoi(line_array[2]) + stoi(line_array[1])) / 2.;
 						y 			= (stoi(line_array[2]) - stoi(line_array[1]))*abs(stoi(line_array[3]));
+						
 						NS[IDS[i]] +=y;
 						A[chrom].insert_coverage(x,y, ID);
 					}
-					if (t > 100000){
-						break;
-					}
-					t+=1;
+					// if (t > 100000){
+					// 	break;
+					// }
+					// t+=1;
+					prevchrom=chrom;
 
 				
 				}
@@ -188,7 +217,6 @@ void load::write_out_inserted_bedgaph_data(map<string, node> A, map<string, int>
 			}
 		}
 	}
-
 
 }
 
@@ -247,9 +275,55 @@ void load::get_bg_files(string dir, vector<string> & bg_files, vector<string> & 
     		i++;
     	}
     }
+}
+vector<double> transform_line_array_to_double(vector<string> line_array){
+	vector<double> x;
+	for (int i = 0 ; i < line_array.size(); i++){
+		x.push_back(stod(line_array[i]));
+	}
+	return x;
 
 }
 
+
+vector<vector<double>> load::coverage_stats_file(string FILE, vector<double> & counts2,vector<int> & IDS, vector<double> & centers, vector<string> & chroms ){
+	ifstream FH(FILE);
+	string line;
+	vector<string> line_array;
+	vector<string> tab_array;
+	vector<double> counts;
+	int ct =1;
+	int ID =0;
+	vector<vector<double>> D;
+	while (getline(FH, line)){
+		if (line.substr(0,1)=="#"){
+			if (ct ==2){
+				counts 	= transform_line_array_to_double(split_under_tab(line.substr(1, line.size()), ','));
+			}
+			ct+=1;
+		}else{
+			tab_array 			= split_under_tab(line , '\t');
+
+			double center 		= (stod(tab_array[1]) + stod(tab_array[2])) / 2.;
+
+
+			vector<double> x    = transform_line_array_to_double(split_under_tab(tab_array[3], ','));
+			D.push_back(x);
+			IDS.push_back(ID);
+			chroms.push_back(tab_array[0]);
+			centers.push_back(center);
+			if (D.size()>1500){
+				break;
+			}
+			ID+=1;
+
+		}
+	}
+	counts2 	= counts;
+
+	FH.close();
+	return D;
+}
 
 
 
