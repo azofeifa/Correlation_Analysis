@@ -96,7 +96,9 @@ void correlate::compute(vector<vector<double>> A, vector<double> counts, vector<
 			if (chroms[i]!=chroms[j]){
 				dist 	= -1;
 			}
-			line+=  to_string(IDS[i]) + ","+ to_string(IDS[j]) + "\t" + to_string(P[i][j]) + "," + to_string(dist) + "\n";
+			if (P[i][j]>0.4){
+				line+=  to_string(IDS[i]) + ","+ to_string(IDS[j]) + "\t" + to_string(P[i][j]) + "," + to_string(dist) + "\n";
+			}
 		}
 		FHW<<line;			
 		
