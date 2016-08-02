@@ -312,9 +312,9 @@ vector<vector<double>> load::coverage_stats_file(string FILE, vector<double> & c
 			IDS.push_back(ID);
 			chroms.push_back(tab_array[0]);
 			centers.push_back(center);
-			if (D.size()>5500){
-				break;
-			}
+			// if (D.size()>5500){
+			// 	break;
+			// }
 			ID+=1;
 
 		}
