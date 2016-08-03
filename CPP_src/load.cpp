@@ -130,7 +130,7 @@ map<string, int> load::insert_bedgraph_data(map<string, node> A, vector<string> 
 	for (int i = 0 ; i < bedgraph_files.size(); i++){
 		NS[IDS[i]] 	= 0.0;
 	}
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for (int i = 0 ; i < bedgraph_files.size(); i++){
 		string file 	= bedgraph_files[i], ID 	= IDS[i];
 		printf("%s\n",file.c_str() );
@@ -162,9 +162,9 @@ map<string, int> load::insert_bedgraph_data(map<string, node> A, vector<string> 
 						NS[IDS[i]] +=y;
 						A[chrom].insert_coverage(x,y, ID);
 					}
-					//if (t > 100000){
-					//	break;
-					//}
+					// if (t > 100000){
+					// 	break;
+					// }
 					t+=1;
 					prevchrom=chrom;
 
@@ -236,7 +236,6 @@ map<string, node> load::make_interval_tree(string FILE, vector<string> IDS){
 				chrom 	= line_array[0] , start = stoi(line_array[1]) , stop = stoi(line_array[2]);
 				segment * S 	= new segment(chrom, start, stop, IDS);
 				A[S->chrom].push_back(S);
-
 			}	
 		}
 	}else{
@@ -273,6 +272,9 @@ void load::get_bg_files(string dir, vector<string> & bg_files, vector<string> & 
     		bg_files.push_back(dir+entry->d_name);
     		IDS.push_back(ID+"_"+to_string(i));
     		i++;
+    		if (i>10){
+    			break;
+    		}
     	}
     }
 }
