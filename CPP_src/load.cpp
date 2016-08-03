@@ -250,9 +250,9 @@ void load::get_bg_files(string dir, vector<string> & bg_files, vector<string> & 
     		bg_files.push_back(dir+entry->d_name);
     		IDS.push_back(ID+"_"+to_string(i));
     		i++;
-    		if (i>10){
-    			break;
-    		}
+    		// if (i>10){
+    		// 	break;
+    		// }
     	}
     }
 }
