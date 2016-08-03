@@ -9,7 +9,7 @@ class segment{
 public:
 	string chrom; 
 	int start, stop;
-	map<string, int> G;
+	map<string, double> G;
 	segment();
 	segment(string, int , int,vector<string>);
 
