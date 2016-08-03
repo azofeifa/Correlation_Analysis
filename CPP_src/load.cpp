@@ -137,7 +137,7 @@ map<string, int> load::insert_bedgraph_data(map<string, node> A, vector<string> 
 						x 			= (stoi(line_array[2]) + stoi(line_array[1])) / 2.;
 						y 			= (stoi(line_array[2]) - stoi(line_array[1]))*abs(stoi(line_array[3]));
 						if (not y){
-							printf("%d, %d, %d \n",stoi(line_array[2]),stoi(line_array[1]) , abs(stoi(line_array[3])) );
+							printf("%d, %d, %d, %d \n",stoi(line_array[2]),stoi(line_array[1]) , stoi(line_array[3]), abs(stoi(line_array[3])) );
 						}
 						NS[ID] +=y;
 						A[chrom].insert_coverage(x,y, ID);
