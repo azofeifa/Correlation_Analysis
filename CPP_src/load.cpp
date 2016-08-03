@@ -56,9 +56,8 @@ void node::insert_coverage(double x, double y, string ID){
 		left->insert_coverage(x, y,  ID);
 	}else if (x > current->start and  x < current->stop  ){
 		if ( 245171985 < x and 245173985 > x and ID.substr(0,10) == "SRR1950496" ){
-			printf("here?, %f, %d-%d\n", current->G[ID], current->start, current->stop );
+			printf("here?, %f, %f, %d-%d\n", current->G[ID], y, current->start, current->stop );
 		}
-
 		current->G[ID]+=y;
 	}
 
