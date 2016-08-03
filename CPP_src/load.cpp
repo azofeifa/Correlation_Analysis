@@ -137,6 +137,7 @@ map<string, int> load::insert_bedgraph_data(map<string, node> A, vector<string> 
 						x 			= (stoi(line_array[2]) + stoi(line_array[1])) / 2.;
 						y 			= (stoi(line_array[2]) - stoi(line_array[1]))*abs(stoi(line_array[3]));
 						if (not y){
+							cout<<line<<line_array[3]<<endl;
 							printf("%d, %d, %d, %d \n",stoi(line_array[2]),stoi(line_array[1]) , stoi(line_array[3]), abs(stoi(line_array[3])) );
 						}
 						NS[ID] +=y;
