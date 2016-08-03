@@ -32,19 +32,16 @@ segment::segment(){
 node::node(){};
 
 node::node(vector<segment * > segments ){
-	center 	= (double(segments[0]->start)  + double(segments[segments.size()-1]->stop)) / 2.;
+	int I 		= segments.size()/2;
+	current 	= segments[I];
 	vector<segment * > Left;
 	vector<segment * > Right;
 	left=NULL, right=NULL;
 	for (int i = 0 ; i < segments.size(); i++){
-		if (segments[i]->stop < center){
+		if (i < I){
 			Left.push_back(segments[i]);
-		}
-		else if (segments[i]->start > center){
+		}else if (i > I){
 			Right.push_back(segments[i]);
-		}
-		else{
-			current.push_back(segments[i]);
 		}
 	}
 	if (Left.size() > 0){
@@ -55,37 +52,18 @@ node::node(vector<segment * > segments ){
 	}
 }
 void node::insert_coverage(double x, double y, string ID){
-	for (int i = 0 ; i < current.size(); i++){
-		if (x > current[i]->start and  x < current[i]->stop  ){
-			current[i]->G[ID]+=y;
-		}
-	}	
-
-	if (x >= center and right != NULL ){
-		right->insert_coverage(x, y, ID);
+	if (x > current->stop and right != NULL){
+		right->insert_coverage(x, y, ID);		
 	}
-	if (x <= center and left !=NULL){
+	else if (x < current->start and left != NULL){
 		left->insert_coverage(x, y,  ID);
+	}else if (x > current->start and  x < current->stop  ){
+		current->G[ID]+=y;
 	}
-}
-void node::searchInterval(int start, int stop, vector<int>& finds ){
-	for (int i = 0 ; i < current.size(); i++){
-		if (stop > current[i]->start and  start < current[i]->stop  ){
-			finds.push_back(1);
-		}
-	}	
-	if (start >= center and right != NULL ){
-		right->searchInterval(start, stop, finds);
-	}
-	if (stop <= center and left !=NULL){
-		left->searchInterval(start, stop, finds);
-	}	
 }
 
 void node::retrieve_nodes(vector<segment*> & saves){
-	for (int i = 0; i < current.size(); i++){
-		saves.push_back(current[i]);
-	}
+	saves.push_back(current);
 	if (right!= NULL){
 		right->retrieve_nodes(saves);
 	}
@@ -133,7 +111,8 @@ map<string, int> load::insert_bedgraph_data(map<string, node> A, vector<string> 
 	//#pragma omp parallel for
 	for (int i = 0 ; i < bedgraph_files.size(); i++){
 		string file 	= bedgraph_files[i], ID 	= IDS[i];
-		printf("%s\n",file.c_str() );
+		printf("%s\n",ID.c_str() );
+		cout<<ID.substr(0,10)<<" "<<ID<<" "<<(ID.substr(0,10)=="SRR1950496")<<endl;
 		ifstream 	FH(file);
 		string line,chrom; 
 		vector<string> line_array;
@@ -162,7 +141,7 @@ map<string, int> load::insert_bedgraph_data(map<string, node> A, vector<string> 
 						NS[IDS[i]] +=y;
 						A[chrom].insert_coverage(x,y, ID);
 					}
-					// if (t > 100000){
+					// if (t > 1000000){
 					// 	break;
 					// }
 					t+=1;

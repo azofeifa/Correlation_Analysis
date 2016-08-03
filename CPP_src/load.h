@@ -21,7 +21,7 @@ public:
 	int start, stop;
 	node * left;
 	node * right;
-	vector<segment * > current;
+	segment * current;
 	void retrieve_nodes(vector<segment * >&);
 	void insert_coverage(double, double, string);
 	node();
