@@ -26,8 +26,6 @@ void make_weigts(double * weights, vector<double> counts, int m){
 	for (int i = 0 ; i < m; i++ ){
 		weights[i] 	= counts[i]/S;
 	}
-
-
 }
 void fill_mean_std(double ** D, double * mean, double * std, double * weights, int n, int m){
 	for (int i = 0 ; i < n; i++){
@@ -36,7 +34,7 @@ void fill_mean_std(double ** D, double * mean, double * std, double * weights, i
 			S+=D[i][j]*weights[j];
 		}
 		mean[i] 	= S;
-		S 	= 0;
+		S 			= 0;
 		for (int j = 0 ; j < m; j++){
 			S+=(pow(D[i][j]-mean[i], 2))*weights[j];
 		}
@@ -50,6 +48,12 @@ double  covariance(double * x, double * y, int m, double * weights, double mx, d
 		S+=weights[j]*(x[j]-mx)*(y[j] -my  ) ;
 	}
 	return S;
+}
+double LOG(double x){
+	if (not x){
+		return 0.0;
+	}
+	return log10(x);
 }
 
 
@@ -70,7 +74,7 @@ void correlate::compute(vector<vector<double>> A, vector<double> counts, vector<
 			P[i][j] 	= 0.0;
 		}
 		for (int j = 0 ; j < m; j++){
-			D[i][j] 	= (A[i][j] / counts[j])*pow(10,3);
+			D[i][j] 	= LOG(A[i][j]) ;
 		}
 	}
 	double pearons;

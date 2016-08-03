@@ -245,7 +245,7 @@ map<string, node> load::make_interval_tree(string FILE, vector<string> IDS){
 	map<string, node> NT;
 	typedef map<string, vector<segment *> >::iterator it_type_5;
 	for(it_type_5 c = A.begin(); c != A.end(); c++) {
-		NT[c->first] 	= node(c->second);
+		NT[c->first] 	= node(sort_segments(c->second));
 	}
 	return NT;
 }
@@ -312,9 +312,9 @@ vector<vector<double>> load::coverage_stats_file(string FILE, vector<double> & c
 			IDS.push_back(ID);
 			chroms.push_back(tab_array[0]);
 			centers.push_back(center);
-			// if (D.size()>5500){
-			// 	break;
-			// }
+			if (D.size()>5500){
+				break;
+			}
 			ID+=1;
 
 		}
