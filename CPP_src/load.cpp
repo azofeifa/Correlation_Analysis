@@ -109,7 +109,7 @@ map<string, int> load::insert_bedgraph_data(map<string, node> A, vector<string> 
 	for (int i = 0 ; i < bedgraph_files.size(); i++){
 		NS[IDS[i]] 	= 0.0;
 	}
-	//#pragma omp parallel for
+	#pragma omp parallel for
 	for (int i = 0 ; i < bedgraph_files.size(); i++){
 		string file 	= bedgraph_files[i], ID 	= IDS[i];
 		ifstream 	FH(file);
@@ -136,16 +136,12 @@ map<string, int> load::insert_bedgraph_data(map<string, node> A, vector<string> 
 					if (N>0){
 						x 			= (stoi(line_array[2]) + stoi(line_array[1])) / 2.;
 						y 			= (stoi(line_array[2]) - stoi(line_array[1]))*abs(stoi(line_array[3]));
-						if (not y){
-							cout<<line<<line_array[3]<<endl;
-							printf("%d, %d, %d, %d \n",stoi(line_array[2]),stoi(line_array[1]) , stoi(line_array[3]), abs(stoi(line_array[3])) );
-						}
 						NS[ID] +=y;
 						A[chrom].insert_coverage(x,y, ID);
 					}
-					if (t > 1000000){
-						break;
-					}
+					// if (t > 1000000){
+					// 	break;
+					// }
 					t+=1;
 					prevchrom=chrom;
 
@@ -188,7 +184,7 @@ void load::write_out_inserted_bedgaph_data(map<string, node> A, map<string, int>
 			string info 	= "";
 			for (string_it ID =IDS.begin(); ID!=IDS.end(); ID++){
 				S+=vals[i]->G[*ID];
-				info+=to_string(vals[i]->G[*ID])+",";
+				info+=to_string(int(vals[i]->G[*ID]))+",";
 			}
 			if (S){
 				line 	= "";
