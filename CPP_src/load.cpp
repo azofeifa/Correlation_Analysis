@@ -18,12 +18,9 @@ segment::segment(string chr, int st, int sp,vector<string> IDS){
 	for (int i = 0 ; i < IDS.size();i++){
 		G[IDS[i]] 	= 0.0;
 	}
-
-
 }
 
-segment::segment(){
-}
+segment::segment(){}
 
 
 //================================================================================================
@@ -58,8 +55,13 @@ void node::insert_coverage(double x, double y, string ID){
 	else if (x < current->start and left != NULL){
 		left->insert_coverage(x, y,  ID);
 	}else if (x > current->start and  x < current->stop  ){
+		if ( 245171985 < x and 245173985 > x and ID.substr(0,10) == "SRR1950496" ){
+			printf("here?\n");
+		}
+
 		current->G[ID]+=y;
 	}
+
 }
 
 void node::retrieve_nodes(vector<segment*> & saves){
@@ -111,8 +113,6 @@ map<string, int> load::insert_bedgraph_data(map<string, node> A, vector<string> 
 	//#pragma omp parallel for
 	for (int i = 0 ; i < bedgraph_files.size(); i++){
 		string file 	= bedgraph_files[i], ID 	= IDS[i];
-		printf("%s\n",ID.c_str() );
-		cout<<ID.substr(0,10)<<" "<<ID<<" "<<(ID.substr(0,10)=="SRR1950496")<<endl;
 		ifstream 	FH(file);
 		string line,chrom; 
 		vector<string> line_array;
@@ -138,12 +138,12 @@ map<string, int> load::insert_bedgraph_data(map<string, node> A, vector<string> 
 						x 			= (stoi(line_array[2]) + stoi(line_array[1])) / 2.;
 						y 			= (stoi(line_array[2]) - stoi(line_array[1]))*abs(stoi(line_array[3]));
 						
-						NS[IDS[i]] +=y;
+						NS[ID] +=y;
 						A[chrom].insert_coverage(x,y, ID);
 					}
-					// if (t > 1000000){
-					// 	break;
-					// }
+					if (t > 1000000){
+						break;
+					}
 					t+=1;
 					prevchrom=chrom;
 
@@ -223,7 +223,8 @@ map<string, node> load::make_interval_tree(string FILE, vector<string> IDS){
 	map<string, node> NT;
 	typedef map<string, vector<segment *> >::iterator it_type_5;
 	for(it_type_5 c = A.begin(); c != A.end(); c++) {
-		NT[c->first] 	= node(sort_segments(c->second));
+		vector<segment * > sorted 	= sort_segments(c->second);
+		NT[c->first] 	= node(sorted);
 	}
 	return NT;
 }
