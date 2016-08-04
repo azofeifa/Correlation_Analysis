@@ -136,12 +136,14 @@ map<string, int> load::insert_bedgraph_data(map<string, node> A, vector<string> 
 					if (N>0){
 						x 			= (stoi(line_array[2]) + stoi(line_array[1])) / 2.;
 						y 			= abs(stoi(line_array[2]) - stoi(line_array[1]))*abs(stoi(line_array[3]));
-						NS[ID] +=y;
-						A[chrom].insert_coverage(x,y, ID);
+						if (y>0){
+						  NS[ID] +=int(y);
+						  A[chrom].insert_coverage(x,y, ID);
+						}
 					}
-					// if (t > 1000000){
+					//if (t > 100000){
 					// 	break;
-					// }
+					//}
 					t+=1;
 					prevchrom=chrom;
 
