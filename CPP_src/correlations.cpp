@@ -139,7 +139,7 @@ void correlate::compute(vector<vector<double>> A, vector<double> counts, vector<
 				dist 	= -1;
 			}
 
-			if (P[i][j]>0.8){
+			if (P[i][j]>0.5){
 				line+=  to_string(IDS[i]) + ","+ to_string(IDS[j]) + "\t" + to_string(P[i][j]) + "," + to_string(dist) + "\n";
 			}
 		}
