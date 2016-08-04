@@ -74,7 +74,7 @@ void correlate::compute(vector<vector<double>> A, vector<double> counts, vector<
 			P[i][j] 	= 0.0;
 		}
 		for (int j = 0 ; j < m; j++){
-			D[i][j] 	= A[i][j]/counts[j] ;
+			D[i][j] 	= LOG(A[i][j]/counts[j]) ;
 		}
 	}
 	double pearons;
