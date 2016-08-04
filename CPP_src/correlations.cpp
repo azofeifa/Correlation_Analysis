@@ -74,7 +74,7 @@ void correlate::compute(vector<vector<double>> A, vector<double> counts, vector<
 			P[i][j] 	= 0.0;
 		}
 		for (int j = 0 ; j < m; j++){
-			D[i][j] 	= LOG(A[i][j]) ;
+			D[i][j] 	= A[i][j]/counts[j] ;
 		}
 	}
 	double pearons;
@@ -139,7 +139,7 @@ void correlate::compute(vector<vector<double>> A, vector<double> counts, vector<
 				dist 	= -1;
 			}
 
-			if (P[i][j]>0.7){
+			if (P[i][j]>0.8){
 				line+=  to_string(IDS[i]) + ","+ to_string(IDS[j]) + "\t" + to_string(P[i][j]) + "," + to_string(dist) + "\n";
 			}
 		}

@@ -261,7 +261,7 @@ void load::get_bg_files(string dir, vector<string> & bg_files, vector<string> & 
 vector<double> transform_line_array_to_double(vector<string> line_array){
 	vector<double> x;
 	for (int i = 0 ; i < line_array.size(); i++){
-		x.push_back(stod(line_array[i]));
+		x.push_back(abs(stod(line_array[i])));
 	}
 	return x;
 
@@ -294,9 +294,9 @@ vector<vector<double>> load::coverage_stats_file(string FILE, vector<double> & c
 			IDS.push_back(ID);
 			chroms.push_back(tab_array[0]);
 			centers.push_back(center);
-			if (D.size()>5500){
-				break;
-			}
+			// if (D.size()>5500){
+			// 	break;
+			// }
 			ID+=1;
 
 		}
