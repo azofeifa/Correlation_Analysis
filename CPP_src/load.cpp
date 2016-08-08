@@ -13,8 +13,8 @@ using namespace std;
 //========================================================================
 //The very very important segment class
 
-segment::segment(string chr, int st, int sp,vector<string> IDS){
-	chrom 	= chr, start = st, stop = sp;
+segment::segment(string chr, int st, int sp,vector<string> IDS, string segment_ID){
+	chrom 	= chr, start = st, stop = sp, ID = segment_ID;
 	for (int i = 0 ; i < IDS.size();i++){
 		G[IDS[i]] 	= 0.0;
 	}
@@ -104,7 +104,7 @@ vector<segment *> sort_segments(vector<segment *> x){
 }
 
 
-map<string, int> load::insert_bedgraph_data(map<string, node> A, vector<string> bedgraph_files, vector<string> IDS){
+map<string, int> load::insert_bedgraph_data(map<string, node> A, vector<string> bedgraph_files, vector<string> IDS, int test){
 	map<string, int> NS;
 	for (int i = 0 ; i < bedgraph_files.size(); i++){
 		NS[IDS[i]] 	= 0.0;
@@ -141,9 +141,9 @@ map<string, int> load::insert_bedgraph_data(map<string, node> A, vector<string> 
 						  A[chrom].insert_coverage(x,y, ID);
 						}
 					}
-					//if (t > 100000){
-					// 	break;
-					//}
+					if (test and t > 10000){
+						break;
+					}
 					t+=1;
 					prevchrom=chrom;
 
@@ -190,7 +190,7 @@ void load::write_out_inserted_bedgaph_data(map<string, node> A, map<string, int>
 			}
 			if (S){
 				line 	= "";
-				line 	= vals[i]->chrom+"\t" + to_string(vals[i]->start)  + "\t" + to_string(vals[i]->stop) + "\t";
+				line 	= vals[i]->chrom+":" + to_string(vals[i]->start)  + "-" + to_string(vals[i]->stop) + "\t" + vals[i]->ID+"\t";
 				info 	= info.substr(0,info.size()-1);
 				FHW<<line<<info<<endl;
 			}
@@ -205,6 +205,7 @@ map<string, node> load::make_interval_tree(string FILE, vector<string> IDS){
 	ifstream FH(FILE);
 	string line,chrom;
 	int start, stop;
+	string segment_ID 	= ".";
 
 	vector<string> line_array;
 	map<string, vector<segment*>> A;
@@ -213,7 +214,10 @@ map<string, node> load::make_interval_tree(string FILE, vector<string> IDS){
 			line_array 	= split_under_tab(line, '\t');
 			if (line_array.size() > 2){
 				chrom 	= line_array[0] , start = stoi(line_array[1]) , stop = stoi(line_array[2]);
-				segment * S 	= new segment(chrom, start, stop, IDS);
+				if (line_array.size() > 3){
+					segment_ID 		= line_array[3];
+				}
+				segment * S 	= new segment(chrom, start, stop, IDS, segment_ID);
 				A[S->chrom].push_back(S);
 			}	
 		}
@@ -268,7 +272,9 @@ vector<double> transform_line_array_to_double(vector<string> line_array){
 }
 
 
-vector<vector<double>> load::coverage_stats_file(string FILE, vector<double> & counts2,vector<int> & IDS, vector<double> & centers, vector<string> & chroms ){
+vector<vector<double>> load::coverage_stats_file(string FILE, vector<double> & counts2, vector<int> & IDS, vector<string> & IDENTIFIERS, int test )
+{
+
 	ifstream FH(FILE);
 	string line;
 	vector<string> line_array;
@@ -285,18 +291,26 @@ vector<vector<double>> load::coverage_stats_file(string FILE, vector<double> & c
 			ct+=1;
 		}else{
 			tab_array 			= split_under_tab(line , '\t');
+			string INFO 		= "";
+			for (int i = 0 ; i < tab_array.size()-1;i++){
+				INFO+=tab_array[i]+"|";
+			}
+			INFO 				= INFO.substr(0,INFO.size()-1);
+			IDENTIFIERS.push_back(INFO);
+
 
 			double center 		= (stod(tab_array[1]) + stod(tab_array[2])) / 2.;
 
 
-			vector<double> x    = transform_line_array_to_double(split_under_tab(tab_array[3], ','));
+			vector<double> x    = transform_line_array_to_double(split_under_tab(tab_array[tab_array.size()-1], ','));
 			D.push_back(x);
 			IDS.push_back(ID);
-			chroms.push_back(tab_array[0]);
-			centers.push_back(center);
-			// if (D.size()>5500){
-			// 	break;
-			// }
+
+			if (test and D.size() > 1000){
+				break;
+			}
+
+
 			ID+=1;
 
 		}

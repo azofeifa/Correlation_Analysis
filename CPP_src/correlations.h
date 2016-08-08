@@ -4,6 +4,6 @@
 #include <string>
 using namespace std;
 namespace correlate{
-	void compute(vector<vector<double>>, vector<double>, vector<int>, vector<string>, vector<double>, string );
+	void compute(vector<vector<double>>, vector<double>, vector<int>, vector<string>,   string, double );
 }
 #endif

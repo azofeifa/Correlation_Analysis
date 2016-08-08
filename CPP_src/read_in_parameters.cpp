@@ -10,6 +10,8 @@ params::params(){
 	p["-fast"] 		= "0";
 	p["-norm"] 		= "0";
 	p["-window"] 	= "0";
+	p["-test"] 		= "0";
+	p["-threshold"] = "0.7";
 	module 		= "";
 	EXIT 		= false;
 

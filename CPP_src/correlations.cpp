@@ -57,7 +57,8 @@ double LOG(double x){
 }
 
 
-void correlate::compute(vector<vector<double>> A, vector<double> counts, vector<int> IDS, vector<string> chroms, vector<double> centers, string out_file){
+void correlate::compute(vector<vector<double>> A, vector<double> counts, vector<int> IDS, 
+		vector<string> IDENTIFIERS, string out_file, double threshold){
 	int n 	= A.size(), m = counts.size();
 	double ** D 		= new double *[n];
 	double ** P 		= new double *[n];
@@ -82,10 +83,7 @@ void correlate::compute(vector<vector<double>> A, vector<double> counts, vector<
 
 	int threads  	= omp_get_max_threads();
 	int cts 		= n / threads;
-//	threads 		= 1;
-	double wall0 = get_wall_time();
-    double cpu0  = get_cpu_time();
-	#pragma omp parallel num_threads(threads)
+		#pragma omp parallel num_threads(threads)
 	{
 		int tid 	= omp_get_thread_num();
 		int start 	= tid*cts;
@@ -101,12 +99,6 @@ void correlate::compute(vector<vector<double>> A, vector<double> counts, vector<
 			}
 		}
 	}
-	double wall1 = get_wall_time();
-    double cpu1  = get_cpu_time();
-    // cout<<endl;
-    // cout<< "Wall Time = " << wall1 - wall0 << endl;
-    // cout<< "CPU Time  = " << cpu1  - cpu0  << endl;
-
     
 	ofstream FHW(out_file);
 	string line 	= "#Locations\t";
@@ -114,7 +106,7 @@ void correlate::compute(vector<vector<double>> A, vector<double> counts, vector<
 	string line3 	= "#VarExpression\t";
 		
 	for (int i = 0 ; i < n ; i++){
-		line += chroms[i]+":" + to_string(int(centers[i]));
+		line += IDENTIFIERS[i];
 		line2 += to_string(mean[i]);
 		line3 += to_string(std[i]);
 		if (i+1 < n){
@@ -134,13 +126,9 @@ void correlate::compute(vector<vector<double>> A, vector<double> counts, vector<
 	for (int i = 0 ; i < n; i++){
 		line 	= "";
 		for (int j = i+1; j < n ; j++){
-			int dist 	= int((abs(centers[i]-centers[j]))/1000.0);
-			if (chroms[i]!=chroms[j]){
-				dist 	= -1;
-			}
 
-			if (P[i][j]>0.7){
-				line+=  to_string(IDS[i]) + ","+ to_string(IDS[j]) + "\t" + to_string(P[i][j]) + "," + to_string(dist) + "\n";
+			if (P[i][j]>threshold){
+				line+=  to_string(IDS[i]) + ","+ to_string(IDS[j]) + "\t" + to_string(P[i][j])   + "\n";
 			}
 		}
 		FHW<<line;			
